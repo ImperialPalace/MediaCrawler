@@ -1,6 +1,13 @@
+'''
+Description: desc
+Author: Firmin.Sun
+Date: 2023-08-10 09:36:01
+FilePath: \MediaCrawler\config\base_config.py
+'''
 # Desc: base config
 PLATFORM = "xhs"
-KEYWORDS = "健身,旅游"
+KEYWORDS = "周愚昧"
+USERIDS = "57a898a582ec391760adadaa"
 LOGIN_TYPE = "qrcode"  # qrcode or phone or cookie
 COOKIES = ""  # login by cookie, if login_type is cookie, you must set this value
 

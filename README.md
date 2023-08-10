@@ -38,6 +38,11 @@
    playwright install
    ```
 
+   Or
+   ```shell
+   python -m playwright install
+   ```
+
 3. 是否保存数据到DB中
 
    如果选择开启，则需要配置数据库连接信息，`config/db_config.py` 中的 `IS_SAVED_DATABASED`和`RELATION_DB_URL` 变量。然后执行以下命令初始化数据库信息，生成相关的数据库表结构：

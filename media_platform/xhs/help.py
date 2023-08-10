@@ -4,6 +4,18 @@ import random
 import time
 import urllib.parse
 
+import binascii
+import ctypes
+import hashlib
+import json
+import random
+import re
+import string
+import time
+import urllib.parse
+
+import requests
+
 
 def sign(a1="", b1="", x_s="", x_t=""):
     """
@@ -42,6 +54,74 @@ def get_b3_trace_id():
     for t in range(16):
         e += re[random.randint(0, je - 1)]
     return e
+
+
+img_cdns = [
+    "https://sns-img-qc.xhscdn.com",
+    "https://sns-img-hw.xhscdn.com",
+    "https://sns-img-bd.xhscdn.com",
+    "https://sns-img-qn.xhscdn.com",
+]
+
+
+def get_img_url_by_trace_id(trace_id: str, format: str = "png"):
+    return f"{random.choice(img_cdns)}/{trace_id}?imageView2/format/{format}"
+
+
+def get_img_urls_by_trace_id(trace_id: str, format: str = "png"):
+    return [f"{cdn}/{trace_id}?imageView2/format/{format}" for cdn in img_cdns]
+
+
+def get_imgs_url_from_note(note) -> list:
+    """the return type is [img1_url, img2_url, ...]"""
+    imgs = note["image_list"]
+    if not len(imgs):
+        return []
+    return [get_img_url_by_trace_id(img["trace_id"]) for img in imgs]
+
+
+def get_imgs_urls_from_note(note) -> list:
+    """the return type is [[img1_url1, img1_url2, img1_url3], [img2_url, img2_url2, img2_url3], ...]"""
+    imgs = note["image_list"]
+    if not len(imgs):
+        return []
+    return [get_img_urls_by_trace_id(img["trace_id"]) for img in imgs]
+
+
+video_cdns = [
+    "https://sns-video-qc.xhscdn.com",
+    "https://sns-video-hw.xhscdn.com",
+    "https://sns-video-bd.xhscdn.com",
+    "https://sns-video-qn.xhscdn.com",
+]
+
+
+def get_video_url_from_note(note) -> str:
+    if not note.get("video"):
+        return ""
+    origin_video_key = note['video']['consumer']['origin_video_key']
+    return f"{random.choice(video_cdns)}/{origin_video_key}"
+
+
+def get_video_urls_from_note(note) -> list:
+    if not note.get("video"):
+        return []
+    origin_video_key = note['video']['consumer']['origin_video_key']
+    return [f"{cdn}/{origin_video_key}" for cdn in video_cdns]
+
+
+def download_file(url: str, filename: str):
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+
+
+def get_valid_path_name(text):
+    invalid_chars = '<>:"/\\|?*'
+    return re.sub('[{}]'.format(re.escape(invalid_chars)), '_', text)
+
 
 
 def mrc(e):

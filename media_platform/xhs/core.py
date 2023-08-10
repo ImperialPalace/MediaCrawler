@@ -72,8 +72,8 @@ class XiaoHongShuCrawler(AbstractCrawler):
                 await self.xhs_client.update_cookies(browser_context=self.browser_context)
 
             # Search for notes and retrieve their comment information.
-            await self.search()
-
+            # await self.search()
+            await self.search_by_user_ids()
             utils.logger.info("Xhs Crawler finished ...")
 
     async def search(self) -> None:
@@ -102,7 +102,31 @@ class XiaoHongShuCrawler(AbstractCrawler):
                         note_id_list.append(note_detail.get("note_id"))
                 page += 1
                 utils.logger.info(f"Note details: {note_details}")
-                await self.batch_get_note_comments(note_id_list)
+                # await self.batch_get_note_comments(note_id_list)
+
+    async def search_by_user_ids(self) -> None:
+        """Search for notes and retrieve their comment information."""
+        utils.logger.info("Begin search xiaohongshu user ids")
+        
+        for user_id in config.USERIDS.split(","):
+            utils.logger.info(f"Current search user id: {user_id}")
+            note_id_list: List[str] = []
+            notes_res = await self.xhs_client.get_user_all_notes(
+                user_id=user_id,
+            )
+            semaphore = asyncio.Semaphore(config.MAX_CONCURRENCY_NUM)
+            task_list = [
+                self.get_note_detail(note_id, semaphore)
+                for note_id in notes_res      
+            ]
+            note_details = await asyncio.gather(*task_list)
+            for note_detail in note_details:
+                if note_detail is not None:
+                    await xhs_model.update_xhs_note(note_detail)
+                    note_id_list.append(note_detail.get("note_id"))
+            utils.logger.info(f"Note details: {note_details}")
+                # await self.batch_get_note_comments(note_id_list)
+
 
     async def get_note_detail(self, note_id: str, semaphore: asyncio.Semaphore) -> Optional[Dict]:
         """Get note detail"""

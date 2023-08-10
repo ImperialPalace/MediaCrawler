@@ -1,16 +1,37 @@
 import asyncio
 import json
 from typing import Dict, Optional
+from enum import Enum
+from typing import NamedTuple
+import time
 
 import httpx
 from playwright.async_api import BrowserContext, Page
 
 from tools import utils
 
-from .exception import DataFetchError, IPBlockError
+from .exception import DataFetchError, IPBlockError, ErrorEnum
 from .field import SearchNoteType, SearchSortType
-from .help import get_search_id, sign
+from .help import get_imgs_url_from_note, get_search_id, get_video_url_from_note, sign
 
+class Note(NamedTuple):
+    """note typle"""
+
+    note_id: str
+    title: str
+    desc: str
+    type: str
+    user: dict
+    img_urls: list
+    video_url: str
+    tag_list: list
+    at_user_list: list
+    collected_count: str
+    comment_count: str
+    liked_count: str
+    share_count: str
+    time: int
+    last_update_time: int
 
 class XHSClient:
     def __init__(
@@ -209,4 +230,80 @@ class XHSClient:
                     result.extend(sub_comments)
                     await asyncio.sleep(crawl_interval)
             await asyncio.sleep(crawl_interval)
+        return result
+
+    async def get_user_info(self, user_id: str):
+        """
+        :param user_id: user_id you want fetch
+        :type user_id: str
+        :rtype: dict
+        """
+        uri = "/api/sns/web/v1/user/otherinfo"
+        params = {"target_user_id": user_id}
+        return await self.get(uri, params)
+
+    async def get_user_notes(self, user_id: str, cursor: str = ""):
+        """get user notes just have simple info
+
+        :param user_id: user_id you want to fetch
+        :type user_id: str
+        :param cursor: return info has this argument, defaults to ""
+        :type cursor: str, optional
+        :return: {cursor:"", has_more:true,notes:[{cover:{},display_title:"",interact_info:{},note_id:"",type:"video"}]}
+        :rtype: dict
+        """
+        uri = "/api/sns/web/v1/user_posted"
+        params = {"num": 30, "cursor": cursor, "user_id": user_id}
+        return await self.get(uri, params)
+
+    async def get_user_all_notes(self, user_id: str, crawl_interval: int = 1):
+        """get user all notes with more info, abnormal notes will be ignored
+
+        :param user_id: user_id you want to fetch
+        :type user_id: str
+        :param crawl_interval: sleep seconds, defaults to 1
+        :type crawl_interval: int, optional
+        :return: note info
+        :rtype: list[Note]
+        """
+
+        has_more = True
+        cursor = ""
+        result = []
+        while has_more:
+            res = await self.get_user_notes(user_id, cursor)
+            has_more = res["has_more"]
+            cursor = res["cursor"]
+            note_ids = map(lambda item: item["note_id"], res["notes"])
+
+            result.extend(list(note_ids))
+            await asyncio.sleep(crawl_interval)
+            # for note_id in note_ids:
+            #     try:
+            #         note = self.get_note_by_id(note_id)
+            #     except DataFetchError as e:
+            #         if ErrorEnum.NOTE_ABNORMAL.value.code == e.error.get("code"):
+            #             continue
+            #         else:
+            #             raise
+            #     interact_info = note["interact_info"]
+            #     note_info = Note(
+            #         note_id=note["note_id"],
+            #         title=note["title"],
+            #         desc=note["desc"],
+            #         type=note["type"],
+            #         user=note["user"],
+            #         img_urls=get_imgs_url_from_note(note),
+            #         video_url=get_video_url_from_note(note),
+            #         tag_list=note["tag_list"],
+            #         at_user_list=note["at_user_list"],
+            #         collected_count=interact_info["collected_count"],
+            #         comment_count=interact_info["comment_count"],
+            #         liked_count=interact_info["liked_count"],
+            #         share_count=interact_info["share_count"],
+            #         time=note["time"],
+            #         last_update_time=note["last_update_time"],
+            #     )
+            #     result.append(note_info)
+            #     await asyncio.sleep(crawl_interval)
         return result
