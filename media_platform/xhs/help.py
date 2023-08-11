@@ -65,6 +65,7 @@ img_cdns = [
 
 
 def get_img_url_by_trace_id(trace_id: str, format: str = "png"):
+    print(random.choice(img_cdns))
     return f"{random.choice(img_cdns)}/{trace_id}?imageView2/format/{format}"
 
 

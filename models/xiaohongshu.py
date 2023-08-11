@@ -32,6 +32,7 @@ class XHSNote(XhsBaseModel):
     comment_count = fields.CharField(null=True, max_length=16, description="笔记评论数")
     share_count = fields.CharField(null=True, max_length=16, description="笔记分享数")
     image_list = fields.TextField(null=True, description="笔记封面图片列表")
+    trace_id = fields.TextField(null=True, description="笔记封面图片列表(无水印)")
 
     class Meta:
         table = "xhs_note"
@@ -78,6 +79,7 @@ async def update_xhs_note(note_item: Dict):
         "share_count": interact_info.get("share_count"),
         "ip_location": note_item.get("ip_location", ""),
         "image_list": ','.join([img.get('url', '') for img in image_list]),
+        "trace_id": ','.join([img.get('trace_id', '') for img in image_list]),
         "last_modify_ts": utils.get_current_timestamp(),
     }
     print("xhs note:", local_db_item)
@@ -87,6 +89,13 @@ async def update_xhs_note(note_item: Dict):
             await XHSNote.create(**local_db_item)
         else:
             await XHSNote.filter(note_id=note_id).update(**local_db_item)
+
+
+
+async def query_xhs_note():
+    note_id="6280c136000000000102e7d6"
+    # return await XHSNote.filter(note_id=note_id).first()
+    return await XHSNote.all()
 
 
 async def update_xhs_note_comment(note_id: str, comment_item: Dict):
