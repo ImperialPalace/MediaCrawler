@@ -21,7 +21,6 @@ import sys
 import aiohttp
 import async_timeout
 
-
 class NoteType(Enum):
     NORMAL = "normal"
     VIDEO = "video"
@@ -32,25 +31,6 @@ class NoteInfo(object):
         self.path = path
         self.type = NoteType.NORMAL.value
 
-async def get_file_path(path):
-    file_path=''
-    index = 1
-    while True:
-        file_path = '{}/{:04d}.png'.format(path, index)
-        if not os.path.exists(file_path):
-           break
-        index+=1
-    return file_path
-
-async def save_files_from_note(info, session):
-    async with async_timeout.timeout(120):
-        async with session.get(info.url) as response:
-            with open(info.path, 'wb') as fd:
-                async for data in response.content.iter_chunked(8192):
-                    fd.write(data)
- 
-    return ('Successfully downloaded ' + info.path)
- 
 def get_urls(note_res, output):
     note_info= []
     video_url = []
@@ -85,7 +65,19 @@ def get_urls(note_res, output):
     
     return note_info,video_url
 
-async def main():
+async def write_one(info, session, semaphore: asyncio.Semaphore, **kwargs):
+    async with semaphore:
+        async with async_timeout.timeout(120):
+            async with session.get(info.url) as response:
+                with open(info.path, 'wb') as fd:
+                    print(info.path)
+
+                    async for data in response.content.iter_chunked(8192):
+                        fd.write(data)
+                
+    return ('Successfully downloaded ' + info.path)
+
+async def bulk_crawl_and_write(**kwargs) -> None:
         # init db
     if config.IS_SAVED_DATABASED:
         await db.init_db()
@@ -93,18 +85,26 @@ async def main():
     note_res = await xhs_model.query_xhs_note()
     note_info,video_url = get_urls(note_res, "output/async-output")
 
+    """ 异步的爬取多个 url 并写入文件 """
     async with aiohttp.ClientSession() as session:
-        tasks = [save_files_from_note(info, session) for info in note_info]
-        return await asyncio.gather(*tasks)
+        tasks = []
+        semaphore = asyncio.Semaphore(config.MAX_CONCURRENCY_NUM)
+        for info in note_info:
+            tasks.append(
+            write_one(info=info, session=session, semaphore=semaphore, **kwargs)
+            )
+        await asyncio.gather(*tasks)
+
 
 if __name__ == '__main__':
- 
+
+    loop = asyncio.get_event_loop()
     try:
-        # asyncio.run(main())
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(main())
-        print('\n'.join(results))
+        results = loop.run_until_complete(bulk_crawl_and_write())
+        # print('\n'.join(results))
 
     except KeyboardInterrupt:
         sys.exit()
+    finally:
+        loop.close()
 
