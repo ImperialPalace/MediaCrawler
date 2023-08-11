@@ -1,3 +1,9 @@
+'''
+Description: desc
+Author: Firmin.Sun
+Date: 2023-08-10 09:36:01
+FilePath: \MediaCrawler\db.py
+'''
 from tortoise import Tortoise, run_async
 
 from config.db_config import *
@@ -13,7 +19,7 @@ async def init_db(create_db: bool = False) -> None:
 
 
 async def init():
-    await init_db(create_db=True)
+    await init_db(create_db=False)
     await Tortoise.generate_schemas()
     utils.logger.info("Init DB Success!")
 
