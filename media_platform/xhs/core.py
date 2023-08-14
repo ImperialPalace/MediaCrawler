@@ -72,8 +72,10 @@ class XiaoHongShuCrawler(AbstractCrawler):
                 await self.xhs_client.update_cookies(browser_context=self.browser_context)
 
             # Search for notes and retrieve their comment information.
-            # await self.search()
-            await self.search_by_user_ids()
+            if config.SEARCH_TYPE:
+                await self.search()
+            else:
+                await self.search_by_user_ids()
             utils.logger.info("Xhs Crawler finished ...")
 
     async def search(self) -> None:

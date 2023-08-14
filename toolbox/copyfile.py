@@ -9,8 +9,8 @@ import os
 import shutil
 
 # Providing the folder path
-origin = 'H:\MediaCrawler\output\周愚昧'
-target = 'H:\MediaCrawler\output\image'
+origin = f"H:\MediaCrawler\output\output2"
+target = 'H:\MediaCrawler\output\image_2'
 
 # Fetching the list of all the files
 image_paths = []

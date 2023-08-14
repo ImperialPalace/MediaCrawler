@@ -40,9 +40,15 @@ def get_urls(note_res, output):
         if not title:
             title = note.note_id
 
-        new_dir_path = os.path.join(output, title)
-        if not os.path.exists(new_dir_path):
-            os.makedirs(new_dir_path)
+        new_dir_path = os.path.join(output, title.strip())
+        try:
+            if not os.path.exists(new_dir_path):
+                os.makedirs(new_dir_path)
+        except Exception as ex:
+            print(":Create {} failed.".format(new_dir_path))
+            new_dir_path = os.path.join(output, title[:4])
+            if not os.path.exists(new_dir_path):
+                os.makedirs(new_dir_path)
 
         if note.type == NoteType.VIDEO.value:
             pass
@@ -60,8 +66,9 @@ def get_urls(note_res, output):
 
             for index, id in enumerate(trace_id):
                 file_path = '{}/{:04d}.png'.format(new_dir_path, index)
-                info = NoteInfo(f"{domain_name}/{id}?imageView2/format/png", file_path)
-                note_info.append (info)
+                if not os.path.exists(file_path):
+                    info = NoteInfo(f"{domain_name}/{id}?imageView2/format/png", file_path)
+                    note_info.append (info)
     
     return note_info,video_url
 
@@ -69,12 +76,16 @@ async def write_one(info, session, semaphore: asyncio.Semaphore, **kwargs):
     async with semaphore:
         async with async_timeout.timeout(120):
             async with session.get(info.url) as response:
-                with open(info.path, 'wb') as fd:
-                    print(info.path)
+                try:
+                    with open(info.path, 'wb') as fd:
+                        print(info.path)
 
-                    async for data in response.content.iter_chunked(8192):
-                        fd.write(data)
-                
+                        async for data in response.content.iter_chunked(8192):
+                            fd.write(data)
+                except Exception as ex:
+                    print(ex)
+        
+        await asyncio.sleep(5)        
     return ('Successfully downloaded ' + info.path)
 
 async def bulk_crawl_and_write(**kwargs) -> None:
@@ -83,7 +94,7 @@ async def bulk_crawl_and_write(**kwargs) -> None:
         await db.init_db()
 
     note_res = await xhs_model.query_xhs_note()
-    note_info,video_url = get_urls(note_res, "output/async-output")
+    note_info,video_url = get_urls(note_res, "output/async-output2")
 
     """ 异步的爬取多个 url 并写入文件 """
     async with aiohttp.ClientSession() as session:
@@ -96,8 +107,13 @@ async def bulk_crawl_and_write(**kwargs) -> None:
         await asyncio.gather(*tasks)
 
 
-if __name__ == '__main__':
+# define command line params ...
+parser = argparse.ArgumentParser(description='Media crawler program.')
+parser.add_argument('--output', type=str, help='',default="output")
 
+if __name__ == '__main__':
+    args = parser.parse_args()
+    
     loop = asyncio.get_event_loop()
     try:
         results = loop.run_until_complete(bulk_crawl_and_write())
