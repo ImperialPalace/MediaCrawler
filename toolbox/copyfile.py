@@ -9,8 +9,12 @@ input = ""
 dst = ""
 
 # Providing the folder path
-origin = "H:\MediaCrawler\output\output2"
-target = 'H:\MediaCrawler\output\image_2'
+origin = r"H:\MediaCrawler\output\5b3486ca4eacab25b8e5265a\5b3486ca4eacab25b8e5265a-爱晚-婷"
+target = r"H:\MediaCrawler\output\5b3486ca4eacab25b8e5265a\5b3486ca4eacab25b8e5265a-爱晚-婷-mix"
+
+if not os.path.exists(target):
+    os.makedirs(target)
+    print("Create")
 
 # Fetching the list of all the files
 image_paths = []

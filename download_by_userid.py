@@ -11,7 +11,6 @@ import asyncio
 import argparse
 import sys
 from download_base import NoteInfo, NoteType, build_output, bulk_crawl_and_write_image
-from media_platform.xhs.help import get_valid_path_name
 from models import xiaohongshu as xhs_model
 import os
 from urllib.parse import urlparse
