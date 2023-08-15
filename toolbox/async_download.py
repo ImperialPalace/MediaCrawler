@@ -2,7 +2,7 @@
 Description: desc
 Author: Firmin.Sun
 Date: 2023-08-11 09:35:21
-FilePath: \MediaCrawler\async_download.py
+FilePath: \MediaCrawler\toolbox\async_download.py
 '''
 
 import config
@@ -15,24 +15,26 @@ from models import xiaohongshu as xhs_model
 import os
 from enum import Enum
 from urllib.parse import urlparse
-from tortoise.queryset import QuerySet
-import asyncio
-import sys
+# from tortoise.queryset import QuerySet
 import aiohttp
 import async_timeout
+
 
 class NoteType(Enum):
     NORMAL = "normal"
     VIDEO = "video"
 
+
 class NoteInfo(object):
+
     def __init__(self, url, path) -> None:
         self.url = url
         self.path = path
         self.type = NoteType.NORMAL.value
 
+
 def get_urls(note_res, output):
-    note_info= []
+    note_info = []
     video_url = []
     for note in note_res:
         title = get_valid_path_name(note.title)
@@ -45,7 +47,7 @@ def get_urls(note_res, output):
             if not os.path.exists(new_dir_path):
                 os.makedirs(new_dir_path)
         except Exception as ex:
-            print(":Create {} failed.".format(new_dir_path))
+            print(":Create {} failed. {}".format(new_dir_path, ex))
             new_dir_path = os.path.join(output, title[:4])
             if not os.path.exists(new_dir_path):
                 os.makedirs(new_dir_path)
@@ -61,16 +63,18 @@ def get_urls(note_res, output):
             if not len(trace_id):
                 return []
 
-            res=urlparse(image_list[0])
+            res = urlparse(image_list[0])
             domain_name = f"{res.scheme}://{res.hostname}/"
 
             for index, id in enumerate(trace_id):
                 file_path = '{}/{:04d}.png'.format(new_dir_path, index)
                 if not os.path.exists(file_path):
-                    info = NoteInfo(f"{domain_name}/{id}?imageView2/format/png", file_path)
-                    note_info.append (info)
-    
-    return note_info,video_url
+                    info = NoteInfo(
+                        f"{domain_name}/{id}?imageView2/format/png", file_path)
+                    note_info.append(info)
+
+    return note_info, video_url
+
 
 async def write_one(info, session, semaphore: asyncio.Semaphore, **kwargs):
     async with semaphore:
@@ -84,36 +88,38 @@ async def write_one(info, session, semaphore: asyncio.Semaphore, **kwargs):
                             fd.write(data)
                 except Exception as ex:
                     print(ex)
-        
-        await asyncio.sleep(5)        
+
+        await asyncio.sleep(5)
     return ('Successfully downloaded ' + info.path)
 
+
 async def bulk_crawl_and_write(**kwargs) -> None:
-        # init db
+    # init db
     if config.IS_SAVED_DATABASED:
         await db.init_db()
 
     note_res = await xhs_model.query_xhs_note()
-    note_info,video_url = get_urls(note_res, "output/async-output2")
-
+    note_info, video_url = get_urls(note_res, "output/async-output2")
     """ 异步的爬取多个 url 并写入文件 """
     async with aiohttp.ClientSession() as session:
         tasks = []
         semaphore = asyncio.Semaphore(config.MAX_CONCURRENCY_NUM)
         for info in note_info:
             tasks.append(
-            write_one(info=info, session=session, semaphore=semaphore, **kwargs)
-            )
+                write_one(info=info,
+                          session=session,
+                          semaphore=semaphore,
+                          **kwargs))
         await asyncio.gather(*tasks)
 
 
 # define command line params ...
 parser = argparse.ArgumentParser(description='Media crawler program.')
-parser.add_argument('--output', type=str, help='',default="output")
+parser.add_argument('--output', type=str, help='', default="output")
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    
+
     loop = asyncio.get_event_loop()
     try:
         results = loop.run_until_complete(bulk_crawl_and_write())
@@ -123,4 +129,3 @@ if __name__ == '__main__':
         sys.exit()
     finally:
         loop.close()
-
