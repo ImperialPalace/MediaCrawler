@@ -6,7 +6,7 @@ FilePath: \MediaCrawler\config\base_config.py
 '''
 # Desc: base config
 PLATFORM = "xhs"
-# SEARCH_TYPE=False
+SEARCH_TYPE = False
 # KEYWORDS = "周愚昧，"
 KEYWORDS = "汉服,国风,国风大赏,新中式,古风,国风穿搭,古装,司酒,"
 # USERIDS = "57a898a582ec391760adadaa"

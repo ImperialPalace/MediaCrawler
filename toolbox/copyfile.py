@@ -1,12 +1,12 @@
+'''
+Author: fmsunyh fmsunyh@gmail.com
+Date: 2023-08-11 18:35:29
+'''
 import shutil
 import os
 
-input =""
+input = ""
 dst = ""
-
-# importing the modules
-import os
-import shutil
 
 # Providing the folder path
 origin = f"H:\MediaCrawler\output\output2"
@@ -20,10 +20,10 @@ sub_folder = os.listdir(origin)
 for item in sub_folder:
     sub_path = f"{origin}/{item}"
     sub_files = os.listdir(sub_path)
-    file_paths = [ f"{sub_path}/{file}" for file in sub_files ] 
+    file_paths = [f"{sub_path}/{file}" for file in sub_files]
     image_paths.extend(file_paths)
 
-# [ print(path) for path in image_paths ] 
+# [ print(path) for path in image_paths ]
 
 # # Fetching all the files to directory
 for index, path in enumerate(image_paths):
@@ -31,4 +31,3 @@ for index, path in enumerate(image_paths):
     shutil.copy2(path, dst)
     print(path, dst)
 print("Files are copied successfully")
-
