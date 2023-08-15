@@ -10,7 +10,7 @@ SEARCH_TYPE = False
 # KEYWORDS = "周愚昧，"
 KEYWORDS = "汉服,国风,国风大赏,新中式,古风,国风穿搭,古装,司酒,"
 # USERIDS = "57a898a582ec391760adadaa"
-USERIDS = "5ff0e6410000000001008400"
+USERIDS = "602cf120000000000101d2c5,6258d0b3000000001000de26,5b3486ca4eacab25b8e5265a"
 LOGIN_TYPE = "qrcode"  # qrcode or phone or cookie
 COOKIES = ""  # login by cookie, if login_type is cookie, you must set this value
 

@@ -51,6 +51,7 @@ def build_output(note, output):
         output_path = os.path.join(output, title[:4])
         if not os.path.exists(output_path):
             os.makedirs(output_path)
+            print("Create {} successfully.".format(output_path))
 
     return output_path
 
@@ -86,13 +87,13 @@ async def bulk_crawl_and_write_image(note_info) -> None:
         await asyncio.gather(*tasks)
 
 
-async def bulk_crawl_and_write_video(note_info) -> None:
+async def bulk_crawl_and_write_video(video_url) -> None:
 
     """ 异步的爬取多个 url 并写入文件 """
     async with aiohttp.ClientSession() as session:
         tasks = []
         semaphore = asyncio.Semaphore(config.MAX_CONCURRENCY_NUM)
-        for info in note_info:
+        for info in video_url:
             tasks.append(
                 write_one(info=info,
                           session=session,

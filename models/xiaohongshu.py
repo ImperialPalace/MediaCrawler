@@ -12,7 +12,8 @@ class XhsBaseModel(Model):
     user_id = fields.CharField(max_length=64, description="用户ID")
     nickname = fields.CharField(null=True, max_length=64, description="用户昵称")
     avatar = fields.CharField(null=True, max_length=255, description="用户头像地址")
-    ip_location = fields.CharField(null=True, max_length=255, description="评论时的IP地址")
+    ip_location = fields.CharField(
+        null=True, max_length=255, description="评论时的IP地址")
     add_ts = fields.BigIntField(description="记录添加时间戳")
     last_modify_ts = fields.BigIntField(description="记录最后修改时间戳")
 
@@ -22,15 +23,20 @@ class XhsBaseModel(Model):
 
 class XHSNote(XhsBaseModel):
     note_id = fields.CharField(max_length=64, index=True, description="笔记ID")
-    type = fields.CharField(null=True, max_length=16, description="笔记类型(normal | video)")
+    type = fields.CharField(null=True, max_length=16,
+                            description="笔记类型(normal | video)")
     title = fields.CharField(null=True, max_length=255, description="笔记标题")
     desc = fields.TextField(null=True, description="笔记描述")
     time = fields.BigIntField(description="笔记发布时间戳", index=True)
     last_update_time = fields.BigIntField(description="笔记最后更新时间戳")
-    liked_count = fields.CharField(null=True, max_length=16, description="笔记点赞数")
-    collected_count = fields.CharField(null=True, max_length=16, description="笔记收藏数")
-    comment_count = fields.CharField(null=True, max_length=16, description="笔记评论数")
-    share_count = fields.CharField(null=True, max_length=16, description="笔记分享数")
+    liked_count = fields.CharField(
+        null=True, max_length=16, description="笔记点赞数")
+    collected_count = fields.CharField(
+        null=True, max_length=16, description="笔记收藏数")
+    comment_count = fields.CharField(
+        null=True, max_length=16, description="笔记评论数")
+    share_count = fields.CharField(
+        null=True, max_length=16, description="笔记分享数")
     image_list = fields.TextField(null=True, description="笔记封面图片列表")
     trace_id = fields.TextField(null=True, description="笔记封面图片列表(无水印)")
 
@@ -43,7 +49,8 @@ class XHSNote(XhsBaseModel):
 
 
 class XHSNoteComment(XhsBaseModel):
-    comment_id = fields.CharField(max_length=64, index=True, description="评论ID")
+    comment_id = fields.CharField(
+        max_length=64, index=True, description="评论ID")
     create_time = fields.BigIntField(index=True, description="评论时间戳")
     note_id = fields.CharField(max_length=64, description="笔记ID")
     content = fields.TextField(description="评论内容")
@@ -91,11 +98,15 @@ async def update_xhs_note(note_item: Dict):
             await XHSNote.filter(note_id=note_id).update(**local_db_item)
 
 
-
 async def query_xhs_note():
-    note_id="6280c136000000000102e7d6"
+    # note_id = "6280c136000000000102e7d6"
     # return await XHSNote.filter(note_id=note_id).first()
     return await XHSNote.all()
+
+
+async def query_xhs_note_by_userid(user_id):
+    # note_id = "6280c136000000000102e7d6"
+    return await XHSNote.filter(user_id=user_id).all()
 
 
 async def update_xhs_note_comment(note_id: str, comment_item: Dict):

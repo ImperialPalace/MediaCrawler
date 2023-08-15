@@ -4,7 +4,7 @@ Author: Firmin.Sun
 Date: 2023-08-11 09:35:21
 FilePath: \MediaCrawler\toolbox\download_save_by_userid.py
 '''
-from download_base import NoteInfo, NoteType, build_output, bulk_crawl_and_write_image, bulk_crawl_and_write_video
+from download_base import NoteInfo, NoteType, build_output, bulk_crawl_and_write_image
 import os
 from models import xiaohongshu as xhs_model
 import argparse
@@ -60,7 +60,7 @@ async def main(output):
     note_info, video_url = await pull_data(output)
     await bulk_crawl_and_write_image(note_info)
 
-    await bulk_crawl_and_write_video(video_url)
+    # await bulk_crawl_and_write_video(video_url)
 
 
 # define command line params ...

@@ -9,7 +9,7 @@ input = ""
 dst = ""
 
 # Providing the folder path
-origin = f"H:\MediaCrawler\output\output2"
+origin = "H:\MediaCrawler\output\output2"
 target = 'H:\MediaCrawler\output\image_2'
 
 # Fetching the list of all the files
