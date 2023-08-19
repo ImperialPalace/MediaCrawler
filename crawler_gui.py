@@ -17,11 +17,12 @@ crawler_proc = None
 log = setup_logging()
 
 
-def start_crawler(keywords, user_ids, numbers):
+def start_crawler(keywords, user_ids, user_collect, numbers):
     global crawler_proc
     log.info('Starting crawler...')
     log.info(keywords)
     log.info(user_ids)
+    log.info(user_collect)
 
     if keywords != '':
         run_cmd = ["python", "crawler.py",
@@ -29,6 +30,9 @@ def start_crawler(keywords, user_ids, numbers):
     elif user_ids != '':
         run_cmd = ["python", "crawler.py",
                    "--user_ids", user_ids, "--numbers", numbers]
+    elif user_collect != '':
+        run_cmd = ["python", "crawler.py",
+                   "--user_collect", user_collect, "--numbers", numbers]
 
     log.info(run_cmd)
 

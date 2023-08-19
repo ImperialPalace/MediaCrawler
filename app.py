@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 13:51:05
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-19 23:23:47
+LastEditTime: 2023-08-20 00:16:44
 FilePath: \MediaCrawler\crawler_gui.py
 Description: 
 '''
@@ -32,10 +32,6 @@ import os
 log = setup_logging()
 
 
-def greet(name):
-    return "Hello " + name + "!"
-
-
 def search_tab(
     headless=False,
 ):
@@ -49,13 +45,16 @@ def search_tab(
         user_ids = gr.Textbox(
             label="user_ids", placeholder="Keep empty if you don't use.")
 
+        user_collect = gr.Textbox(
+            label="user_collect", placeholder="Keep empty if you don't use.")
+
         numbers = gr.Textbox(
             label="numbers", value='1000')
         button_start_crawler, button_stop_crawler = gradio_crawler()
 
         button_start_crawler.click(
             fn=start_crawler,
-            inputs=[keywords, user_ids, numbers]
+            inputs=[keywords, user_ids, user_collect, numbers]
         )
 
         button_stop_crawler.click(
@@ -76,13 +75,13 @@ def download_tab(
         # # Setup gradio download and copy  buttons
 
         with gr.Row():
-            keyword = gr.Textbox(
-                label="keyword", placeholder="Keep empty if you don't use.")
-            user_id = gr.Textbox(
-                label="user_id", placeholder="Keep empty if you don't use.")
+            keywords = gr.Textbox(
+                label="keywords", placeholder="Keep empty if you don't use.")
+            user_ids = gr.Textbox(
+                label="user_ids", placeholder="Keep empty if you don't use.")
         with gr.Row():
             download_output = gr.Textbox(label="download output")
-            (button_start_download, button_stop_download)  = gradio_button("download")
+            (button_start_download, button_stop_download) = gradio_button("download")
         with gr.Row():
             copy_input = gr.Textbox(label="copy input")
             copy_output = gr.Textbox(label="copy output")
@@ -94,7 +93,7 @@ def download_tab(
 
         button_start_download.click(
             fn=start_download,
-            inputs=[keyword, user_id, download_output]
+            inputs=[keywords, user_ids, download_output]
         )
 
         button_stop_download.click(

@@ -14,6 +14,7 @@ from .exception import DataFetchError, IPBlockError, ErrorEnum
 from .field import SearchNoteType, SearchSortType
 from .help import get_imgs_url_from_note, get_search_id, get_video_url_from_note, sign
 
+
 class Note(NamedTuple):
     """note typle"""
 
@@ -32,6 +33,7 @@ class Note(NamedTuple):
     share_count: str
     time: int
     last_update_time: int
+
 
 class XHSClient:
     def __init__(
@@ -110,7 +112,8 @@ class XHSClient:
             if note_card.get("items"):
                 ping_flag = True
         except Exception as e:
-            utils.logger.error(f"Ping xhs failed: {e}, and try to login again...")
+            utils.logger.error(
+                f"Ping xhs failed: {e}, and try to login again...")
             ping_flag = False
         return ping_flag
 
@@ -225,7 +228,8 @@ class XHSClient:
                     sub_comments_res = await self.get_note_sub_comments(note_id, comment["id"], num=page_num,
                                                                         cursor=sub_comment_cursor)
                     sub_comments = sub_comments_res["comments"]
-                    sub_comments_has_more = sub_comments_res["has_more"] and len(sub_comments) == page_num
+                    sub_comments_has_more = sub_comments_res["has_more"] and len(
+                        sub_comments) == page_num
                     sub_comment_cursor = sub_comments_res["cursor"]
                     result.extend(sub_comments)
                     await asyncio.sleep(crawl_interval)
@@ -278,32 +282,40 @@ class XHSClient:
 
             result.extend(list(note_ids))
             await asyncio.sleep(crawl_interval)
-            # for note_id in note_ids:
-            #     try:
-            #         note = self.get_note_by_id(note_id)
-            #     except DataFetchError as e:
-            #         if ErrorEnum.NOTE_ABNORMAL.value.code == e.error.get("code"):
-            #             continue
-            #         else:
-            #             raise
-            #     interact_info = note["interact_info"]
-            #     note_info = Note(
-            #         note_id=note["note_id"],
-            #         title=note["title"],
-            #         desc=note["desc"],
-            #         type=note["type"],
-            #         user=note["user"],
-            #         img_urls=get_imgs_url_from_note(note),
-            #         video_url=get_video_url_from_note(note),
-            #         tag_list=note["tag_list"],
-            #         at_user_list=note["at_user_list"],
-            #         collected_count=interact_info["collected_count"],
-            #         comment_count=interact_info["comment_count"],
-            #         liked_count=interact_info["liked_count"],
-            #         share_count=interact_info["share_count"],
-            #         time=note["time"],
-            #         last_update_time=note["last_update_time"],
-            #     )
-            #     result.append(note_info)
-            #     await asyncio.sleep(crawl_interval)
+
         return result
+
+    async def get_user_collect_notes(self, user_id: str, num: int = 30, cursor: str = ""):
+        uri = "/api/sns/web/v2/note/collect/page"
+        params = {"user_id": user_id, "num": num, "cursor": cursor}
+        return await self.get(uri, params)
+
+    async def get_user_all_collect_notes(self, user_id: str, crawl_interval: int = 1):
+        """get user all notes with more info, abnormal notes will be ignored
+
+        :param user_id: user_id you want to fetch
+        :type user_id: str
+        :param crawl_interval: sleep seconds, defaults to 1
+        :type crawl_interval: int, optional
+        :return: note info
+        :rtype: list[Note]
+        """
+
+        has_more = True
+        cursor = ""
+        result = []
+        while has_more:
+            res = await self.get_user_collect_notes(user_id, 30, cursor)
+            has_more = res["has_more"]
+            cursor = res["cursor"]
+            note_ids = map(lambda item: item["note_id"], res["notes"])
+
+            result.extend(list(note_ids))
+            await asyncio.sleep(crawl_interval)
+
+        return result
+
+    async def get_user_like_notes(self, user_id: str, num: int = 30, cursor: str = ""):
+        uri = "/api/sns/web/v1/note/like/page"
+        params = {"user_id": user_id, "num": num, "cursor": cursor}
+        return await self.get(uri, params)

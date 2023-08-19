@@ -8,6 +8,7 @@ FilePath: \MediaCrawler\config\base_config.py
 PLATFORM = "xhs"
 keywords = ""
 userids = ""
+user_collect = ""
 
 LOGIN_TYPE = "qrcode"  # qrcode or phone or cookie
 COOKIES = ""  # login by cookie, if login_type is cookie, you must set this value

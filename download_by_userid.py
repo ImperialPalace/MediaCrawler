@@ -58,9 +58,12 @@ async def pull_data(output, user_id):
     return note_info, video_url
 
 
-async def main(output, user_id):
-    note_info, video_url = await pull_data(output, user_id)
-    await bulk_crawl_and_write_image(note_info)
+async def main(output, user_ids):
+    for user_id in user_ids.split(','):
+        print("user_id:{}".format(user_id))
+        await asyncio.sleep(5)
+        note_info, video_url = await pull_data(output, user_id)
+        await bulk_crawl_and_write_image(note_info)
 
     # await bulk_crawl_and_write_video(video_url)
 
@@ -68,14 +71,14 @@ async def main(output, user_id):
 # define command line params ...
 parser = argparse.ArgumentParser(description='Media crawler program.')
 parser.add_argument('--output', type=str, help='', default="output/test")
-parser.add_argument('--user_id', type=str, help='',
+parser.add_argument('--user_ids', type=str, help='',
                     default="57a898a582ec391760adadaa")
 
 if __name__ == '__main__':
     args = parser.parse_args()
 
     output = args.output
-    user_id = args.user_id
+    user_ids = args.user_ids
 
     if not os.path.exists(output):
         os.makedirs(output)
@@ -83,7 +86,7 @@ if __name__ == '__main__':
 
     loop = asyncio.get_event_loop()
     try:
-        results = loop.run_until_complete(main(output, user_id))
+        results = loop.run_until_complete(main(output, user_ids))
         print('Done')
 
     except KeyboardInterrupt:

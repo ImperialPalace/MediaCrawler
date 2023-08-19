@@ -17,18 +17,18 @@ log = setup_logging()
 download_proc = None
 
 
-def start_download(keyword, user_id, output):
+def start_download(keywords, user_ids, output):
     global download_proc
     log.info('Starting download...')
-    log.info(keyword)
+    log.info(keywords)
     log.info(output)
 
-    if keyword != '':
+    if keywords != '':
         run_cmd = ["python", "download_by_keyword.py",
-                   "--keyword", keyword, '--output', output]
-    elif user_id != '':
+                   "--keywords", keywords, '--output', output]
+    elif user_ids != '':
         run_cmd = ["python", "download_by_userid.py",
-                   "--user_id", user_id, '--output', output]
+                   "--user_ids", user_ids, '--output', output]
 
     log.info(run_cmd)
 

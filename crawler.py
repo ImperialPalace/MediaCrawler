@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 16:56:29
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-19 19:35:08
+LastEditTime: 2023-08-20 00:15:12
 FilePath: \MediaCrawler\crawler.py
 Description: 
 '''
@@ -39,6 +39,7 @@ async def main():
 
     parser.add_argument('--keywords', type=str, help='', default="")
     parser.add_argument('--user_ids', type=str, help='', default="")
+    parser.add_argument('--user_collect', type=str, help='', default="")
     parser.add_argument('--numbers', type=str, help='', default=20000)
 
     # init account pool
@@ -52,9 +53,10 @@ async def main():
 
     if args.keywords != '':
         config.keywords = args.keywords
-
-    elif args.usr_ids != '':
+    elif args.user_ids != '':
         config.userids = args.user_ids
+    elif args.user_collect != '':
+        config.user_collect = args.user_collect
 
     if args.numbers != '':
         config.crawler_max_notes_count = int(args.numbers)
