@@ -6,11 +6,13 @@ FilePath: \MediaCrawler\config\base_config.py
 '''
 # Desc: base config
 PLATFORM = "xhs"
-SEARCH_TYPE = False
+SEARCH_TYPE = True
 # KEYWORDS = "周愚昧，"
-KEYWORDS = "汉服,国风,国风大赏,新中式,古风,国风穿搭,古装,司酒,"
+KEYWORDS = "恽寿平"
 # USERIDS = "57a898a582ec391760adadaa"
-USERIDS = "602cf120000000000101d2c5,6258d0b3000000001000de26,5b3486ca4eacab25b8e5265a"
+# USERIDS = "602cf120000000000101d2c5,6258d0b3000000001000de26,5b3486ca4eacab25b8e5265a"
+USERIDS = "5feddb9900000000010004ba"  # "国画段东梁"
+
 LOGIN_TYPE = "qrcode"  # qrcode or phone or cookie
 COOKIES = ""  # login by cookie, if login_type is cookie, you must set this value
 
@@ -30,7 +32,7 @@ SAVE_LOGIN_STATE = True
 USER_DATA_DIR = "%s_user_data_dir"  # %s will be replaced by platform name
 
 # crawler max notes count
-CRAWLER_MAX_NOTES_COUNT = 200
+CRAWLER_MAX_NOTES_COUNT = 20000
 
 # max concurrency num
 MAX_CONCURRENCY_NUM = 10

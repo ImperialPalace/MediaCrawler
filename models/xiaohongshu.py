@@ -5,6 +5,7 @@ from tortoise.models import Model
 
 import config
 from tools import utils
+from tortoise.expressions import Q
 
 
 class XhsBaseModel(Model):
@@ -107,6 +108,10 @@ async def query_xhs_note():
 async def query_xhs_note_by_userid(user_id):
     # note_id = "6280c136000000000102e7d6"
     return await XHSNote.filter(user_id=user_id).all()
+
+
+async def query_xhs_note_by_keyword(keyword):
+    return await XHSNote.filter(Q(title__contains=keyword) | Q(desc__contains=keyword)).all()
 
 
 async def update_xhs_note_comment(note_id: str, comment_item: Dict):
