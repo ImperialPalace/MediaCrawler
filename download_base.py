@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-15 11:24:46
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-15 14:51:15
+LastEditTime: 2023-08-19 17:32:08
 FilePath: \MediaCrawler\toolbox\download_base.py
 Description: desc
 '''
@@ -45,13 +45,13 @@ def build_output(note, output):
 
     try:
         if not os.path.exists(output_path):
-            os.makedirs(output_path)
+            os.makedirs(r"{output_path}")
     except Exception:
         print(":Create {} failed.".format(output_path))
         output_path = os.path.join(output, title[:4])
-        if not os.path.exists(output_path):
-            os.makedirs(output_path)
-            print("Create {} successfully.".format(output_path))
+        if not os.path.exists(r"{output_path}"):
+            os.makedirs(r"{output_path}")
+            print("Create {} successfully.".format(r"{output_path}"))
 
     return output_path
 

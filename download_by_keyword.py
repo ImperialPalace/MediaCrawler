@@ -65,18 +65,7 @@ async def main(output, keyword):
     # await bulk_crawl_and_write_video(video_url)
 
 
-# define command line params ...
-parser = argparse.ArgumentParser(description='Media crawler program.')
-parser.add_argument('--output', type=str, help='', default="output/test")
-parser.add_argument('--keyword', type=str, help='',
-                    default="荷花")
-
-if __name__ == '__main__':
-    args = parser.parse_args()
-
-    output = args.output
-    keyword = args.keyword
-
+def do_task(keyword, output):
     if not os.path.exists(output):
         os.makedirs(output)
         print("Create output dir:{}".format(output))
@@ -90,3 +79,18 @@ if __name__ == '__main__':
         sys.exit()
     finally:
         loop.close()
+
+
+# define command line params ...
+parser = argparse.ArgumentParser(description='Media crawler program.')
+parser.add_argument('--output', type=str, help='', default="output/test")
+parser.add_argument('--keyword', type=str, help='',
+                    default="荷花")
+
+if __name__ == '__main__':
+    args = parser.parse_args()
+
+    output = args.output
+    keyword = args.keyword
+
+    do_task(keyword, output)

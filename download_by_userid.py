@@ -68,14 +68,14 @@ async def main(output, user_id):
 # define command line params ...
 parser = argparse.ArgumentParser(description='Media crawler program.')
 parser.add_argument('--output', type=str, help='', default="output/test")
-parser.add_argument('--id', type=str, help='',
+parser.add_argument('--user_id', type=str, help='',
                     default="57a898a582ec391760adadaa")
 
 if __name__ == '__main__':
     args = parser.parse_args()
 
     output = args.output
-    user_id = args.id
+    user_id = args.user_id
 
     if not os.path.exists(output):
         os.makedirs(output)
