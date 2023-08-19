@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 14:18:10
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-19 19:23:49
+LastEditTime: 2023-08-19 23:18:07
 FilePath: \MediaCrawler\download_gui.py
 Description: 
 '''
@@ -74,12 +74,43 @@ def start_copydirs(input, output):
         return
 
 
-def gradio_button():
-    with gr.Row():
-        button_start_download = gr.Button('Start download', variant='primary')
-        button_stop_download = gr.Button('Stop download')
+def start_remove_edge(input, output):
+    log.info('Starting remove edge...')
+    log.info(input)
+    log.info(output)
 
-    with gr.Row():
-        button_start_copy = gr.Button('Start copy', variant='primary')
+    run_cmd = ["python", "toolbox/remove_edge.py",
+               "--input", input, '--output', output]
 
-    return (button_start_download, button_stop_download, button_start_copy)
+    log.info(run_cmd)
+
+    # Start background process
+    log.info('Starting remove edge...')
+    try:
+        proc = subprocess.Popen(run_cmd)
+    except Exception as e:
+        log.error('Failed to remove edge:', e)
+        return
+
+
+def gradio_button(button):
+    match button:
+        case "download":
+            with gr.Row():
+                button_start_download = gr.Button(
+                    'Start download', variant='primary')
+                button_stop_download = gr.Button('Stop download')
+                return button_start_download, button_stop_download
+        case "copy":
+            with gr.Row():
+                button_start_copy = gr.Button('Start copy', variant='primary')
+                return button_start_copy
+        case "remove":
+            with gr.Row():
+                button_start_remove_edge = gr.Button(
+                    'Start remove edge', variant='primary')
+            return button_start_remove_edge
+        case default:
+            return None
+
+    # return (button_start_download, button_stop_download, button_start_copy, button_start_remove_edge)

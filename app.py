@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 13:51:05
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-19 19:29:20
+LastEditTime: 2023-08-19 23:23:47
 FilePath: \MediaCrawler\crawler_gui.py
 Description: 
 '''
@@ -12,6 +12,7 @@ from download_gui import (
     start_download,
     stop_download,
     start_copydirs,
+    start_remove_edge,
 )
 
 from crawler_gui import (
@@ -79,15 +80,18 @@ def download_tab(
                 label="keyword", placeholder="Keep empty if you don't use.")
             user_id = gr.Textbox(
                 label="user_id", placeholder="Keep empty if you don't use.")
-
-        download_output = gr.Textbox(label="download output")
-
+        with gr.Row():
+            download_output = gr.Textbox(label="download output")
+            (button_start_download, button_stop_download)  = gradio_button("download")
         with gr.Row():
             copy_input = gr.Textbox(label="copy input")
             copy_output = gr.Textbox(label="copy output")
+            button_start_copy = gradio_button("copy")
+        with gr.Row():
+            copy_input = gr.Textbox(label="remove input")
+            copy_output = gr.Textbox(label="remove output")
+            button_start_remove_edge = gradio_button("remove")
 
-        (button_start_download, button_stop_download,
-         button_start_copy) = gradio_button()
         button_start_download.click(
             fn=start_download,
             inputs=[keyword, user_id, download_output]
@@ -102,6 +106,10 @@ def download_tab(
             inputs=[copy_input, copy_output]
         )
 
+        button_start_remove_edge.click(
+            fn=start_remove_edge,
+            inputs=[copy_input, copy_output]
+        )
         return (
             "",
         )
