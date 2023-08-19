@@ -85,7 +85,7 @@ class XiaoHongShuCrawler(AbstractCrawler):
         for keyword in config.keywords.split(","):
             utils.logger.info(f"Current search keyword: {keyword}")
             page = 1
-            while page * xhs_limit_count <= config.CRAWLER_MAX_NOTES_COUNT:
+            while page * xhs_limit_count <= config.crawler_max_notes_count:
                 note_id_list: List[str] = []
                 notes_res = await self.xhs_client.get_note_by_keyword(
                     keyword=keyword,

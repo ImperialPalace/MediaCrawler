@@ -2,19 +2,22 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 13:51:05
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-19 17:22:47
+LastEditTime: 2023-08-19 19:29:20
 FilePath: \MediaCrawler\crawler_gui.py
 Description: 
 '''
 
 from download_gui import (
-    gradio_download,
+    gradio_button,
     start_download,
+    stop_download,
+    start_copydirs,
 )
 
 from crawler_gui import (
     gradio_crawler,
-    start_crawler
+    start_crawler,
+    stop_crawler,
 )
 
 import argparse
@@ -44,13 +47,19 @@ def search_tab(
             label="keywords", placeholder="Keep empty if you don't use.")
         user_ids = gr.Textbox(
             label="user_ids", placeholder="Keep empty if you don't use.")
-        button_start_crawler = gradio_crawler()
+
+        numbers = gr.Textbox(
+            label="numbers", value='1000')
+        button_start_crawler, button_stop_crawler = gradio_crawler()
 
         button_start_crawler.click(
             fn=start_crawler,
-            inputs=[keywords, user_ids]
+            inputs=[keywords, user_ids, numbers]
         )
 
+        button_stop_crawler.click(
+            fn=stop_crawler,
+        )
         return (
             "",
         )
@@ -63,17 +72,34 @@ def download_tab(
         gr.Markdown(
             'Download data...')
 
-        # # Setup gradio tensorboard buttons
-        keyword = gr.Textbox(
-            label="keyword", placeholder="Keep empty if you don't use.")
-        user_id = gr.Textbox(
-            label="user_id", placeholder="Keep empty if you don't use.")
-        output = gr.Textbox(label="output")
-        button_start_download = gradio_download()
+        # # Setup gradio download and copy  buttons
 
+        with gr.Row():
+            keyword = gr.Textbox(
+                label="keyword", placeholder="Keep empty if you don't use.")
+            user_id = gr.Textbox(
+                label="user_id", placeholder="Keep empty if you don't use.")
+
+        download_output = gr.Textbox(label="download output")
+
+        with gr.Row():
+            copy_input = gr.Textbox(label="copy input")
+            copy_output = gr.Textbox(label="copy output")
+
+        (button_start_download, button_stop_download,
+         button_start_copy) = gradio_button()
         button_start_download.click(
             fn=start_download,
-            inputs=[keyword, user_id, output]
+            inputs=[keyword, user_id, download_output]
+        )
+
+        button_stop_download.click(
+            fn=stop_download
+        )
+
+        button_start_copy.click(
+            fn=start_copydirs,
+            inputs=[copy_input, copy_output]
         )
 
         return (

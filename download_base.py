@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-15 11:24:46
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-19 17:32:08
+LastEditTime: 2023-08-19 17:51:48
 FilePath: \MediaCrawler\toolbox\download_base.py
 Description: desc
 '''
@@ -17,7 +17,7 @@ from enum import Enum
 
 import aiohttp
 import async_timeout
-
+import uuid
 
 class NoteType(Enum):
     NORMAL = "normal"
@@ -48,10 +48,10 @@ def build_output(note, output):
             os.makedirs(r"{output_path}")
     except Exception:
         print(":Create {} failed.".format(output_path))
-        output_path = os.path.join(output, title[:4])
-        if not os.path.exists(r"{output_path}"):
-            os.makedirs(r"{output_path}")
-            print("Create {} successfully.".format(r"{output_path}"))
+        output_path = os.path.join(output, str(uuid.uuid4()))
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+            print("Create {} successfully. instand of {}".format(output_path, title.strip()))
 
     return output_path
 

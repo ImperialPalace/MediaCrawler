@@ -85,7 +85,7 @@ def do_task(keyword, output):
 parser = argparse.ArgumentParser(description='Media crawler program.')
 parser.add_argument('--output', type=str, help='', default="output/test")
 parser.add_argument('--keyword', type=str, help='',
-                    default="荷花")
+                    default="胡歌")
 
 if __name__ == '__main__':
     args = parser.parse_args()

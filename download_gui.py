@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 14:18:10
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-19 16:51:48
+LastEditTime: 2023-08-19 19:23:49
 FilePath: \MediaCrawler\download_gui.py
 Description: 
 '''
@@ -14,8 +14,11 @@ import gradio as gr
 # Set up logging
 log = setup_logging()
 
+download_proc = None
+
 
 def start_download(keyword, user_id, output):
+    global download_proc
     log.info('Starting download...')
     log.info(keyword)
     log.info(output)
@@ -32,14 +35,51 @@ def start_download(keyword, user_id, output):
     # Start background process
     log.info('Starting download...')
     try:
-        download = subprocess.Popen(run_cmd)
+        download_proc = subprocess.Popen(run_cmd)
     except Exception as e:
         log.error('Failed to start download:', e)
         return
 
 
-def gradio_download():
-    with gr.Row():
-        button_start_download = gr.Button('Start download')
+def stop_download():
+    global download_proc
+    if download_proc is not None:
+        log.info('Stopping download process...')
+        try:
+            download_proc.terminate()
+            download_proc = None
+            log.info('...process stopped')
+        except Exception as e:
+            log.error('Failed to stop Download:', e)
+    else:
+        log.info('Download is not running...')
 
-    return button_start_download
+
+def start_copydirs(input, output):
+    log.info('Starting copydirs...')
+    log.info(input)
+    log.info(output)
+
+    run_cmd = ["python", "toolbox/copydirs.py",
+               "--input", input, '--output', output]
+
+    log.info(run_cmd)
+
+    # Start background process
+    log.info('Starting copy...')
+    try:
+        copy_proc = subprocess.Popen(run_cmd)
+    except Exception as e:
+        log.error('Failed to start copy:', e)
+        return
+
+
+def gradio_button():
+    with gr.Row():
+        button_start_download = gr.Button('Start download', variant='primary')
+        button_stop_download = gr.Button('Stop download')
+
+    with gr.Row():
+        button_start_copy = gr.Button('Start copy', variant='primary')
+
+    return (button_start_download, button_stop_download, button_start_copy)

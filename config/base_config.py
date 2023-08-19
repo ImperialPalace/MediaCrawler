@@ -28,7 +28,8 @@ SAVE_LOGIN_STATE = True
 USER_DATA_DIR = "%s_user_data_dir"  # %s will be replaced by platform name
 
 # crawler max notes count
-CRAWLER_MAX_NOTES_COUNT = 20000
+crawler_max_notes_count = 20000
+
 
 # max concurrency num
 MAX_CONCURRENCY_NUM = 10
