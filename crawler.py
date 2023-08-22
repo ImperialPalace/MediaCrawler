@@ -1,9 +1,9 @@
 '''
 Author: fmsunyh fmsunyh@gmail.com
-Date: 2023-08-19 12:44:52
+Date: 2023-08-19 16:56:29
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-20 00:39:12
-FilePath: \MediaCrawler\main.py
+LastEditTime: 2023-08-20 00:15:12
+FilePath: \MediaCrawler\crawler.py
 Description: 
 '''
 import argparse
@@ -36,10 +36,11 @@ async def main():
                         default=config.PLATFORM)
     parser.add_argument('--lt', type=str, help='Login type (qrcode | phone | cookie)',
                         choices=["qrcode", "phone", "cookie"], default=config.LOGIN_TYPE)
+
     parser.add_argument('--keywords', type=str, help='', default="")
     parser.add_argument('--user_ids', type=str, help='', default="")
-    parser.add_argument('--user_collect', type=str, help='', default="6024f3f9000000000101c3cd")
-    parser.add_argument('--numbers', type=str, help='', default=200)
+    parser.add_argument('--user_collect', type=str, help='', default="")
+    parser.add_argument('--numbers', type=str, help='', default=20000)
 
     # init account pool
     account_pool = proxy_account_pool.create_account_pool()

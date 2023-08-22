@@ -43,6 +43,8 @@ def get_note_info(note_res, output):
                     info = NoteInfo(
                         f"{domain_name}/{id}?imageView2/format/png", file_path)
                     note_info.append(info)
+                else:
+                    print("{} exists...".format(file_path))
 
     return note_info, video_url
 
@@ -58,35 +60,40 @@ async def pull_data(output, keyword):
     return note_info, video_url
 
 
-async def main(output, keyword):
-    note_info, video_url = await pull_data(output, keyword)
-    await bulk_crawl_and_write_image(note_info)
+async def main(output, keywords):
+    for keyword in keywords.split(","):
+        note_info, video_url = await pull_data(output, keyword)
+        await bulk_crawl_and_write_image(note_info)
 
     # await bulk_crawl_and_write_video(video_url)
 
 
-# define command line params ...
-parser = argparse.ArgumentParser(description='Media crawler program.')
-parser.add_argument('--output', type=str, help='', default="output/test")
-parser.add_argument('--keyword', type=str, help='',
-                    default="荷花")
-
-if __name__ == '__main__':
-    args = parser.parse_args()
-
-    output = args.output
-    keyword = args.keyword
-
+def do_task(keywords, output):
     if not os.path.exists(output):
         os.makedirs(output)
         print("Create output dir:{}".format(output))
 
     loop = asyncio.get_event_loop()
     try:
-        results = loop.run_until_complete(main(output, keyword))
+        results = loop.run_until_complete(main(output, keywords))
         print('Done')
 
     except KeyboardInterrupt:
         sys.exit()
     finally:
         loop.close()
+
+
+# define command line params ...
+parser = argparse.ArgumentParser(description='Media crawler program.')
+parser.add_argument('--output', type=str, help='', default="output/test")
+parser.add_argument('--keywords', type=str, help='',
+                    default="胡歌")
+
+if __name__ == '__main__':
+    args = parser.parse_args()
+
+    output = args.output
+    keywords = args.keywords
+
+    do_task(keywords, output)

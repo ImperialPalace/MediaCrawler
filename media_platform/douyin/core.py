@@ -26,7 +26,8 @@ class DouYinCrawler(AbstractCrawler):
     browser_context: BrowserContext
 
     def __init__(self) -> None:
-        self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"  # fixed
+        # fixed
+        self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
         self.index_url = "https://www.douyin.com"
 
     def init_config(self, platform: str, login_type: str, account_pool: AccountPool) -> None:
@@ -74,18 +75,20 @@ class DouYinCrawler(AbstractCrawler):
             aweme_list: List[str] = []
             dy_limite_count = 10  # douyin fixed limit page 10
             page = 0
-            while (page + 1) * dy_limite_count <= config.CRAWLER_MAX_NOTES_COUNT:
+            while (page + 1) * dy_limite_count <= config.crawler_max_notes_count:
                 try:
                     posts_res = await self.dy_client.search_info_by_keyword(keyword=keyword,
                                                                             offset=page * dy_limite_count)
                 except DataFetchError:
-                    utils.logger.error(f"search douyin keyword: {keyword} failed")
+                    utils.logger.error(
+                        f"search douyin keyword: {keyword} failed")
                     break
                 page += 1
                 for post_item in posts_res.get("data"):
                     try:
                         aweme_info: Dict = post_item.get("aweme_info") or \
-                                           post_item.get("aweme_mix_info", {}).get("mix_items")[0]
+                            post_item.get("aweme_mix_info", {}
+                                          ).get("mix_items")[0]
                     except TypeError:
                         continue
                     aweme_list.append(aweme_info.get("aweme_id", ""))
@@ -97,7 +100,8 @@ class DouYinCrawler(AbstractCrawler):
         task_list: List[Task] = []
         semaphore = asyncio.Semaphore(config.MAX_CONCURRENCY_NUM)
         for aweme_id in aweme_list:
-            task = asyncio.create_task(self.get_comments(aweme_id, semaphore), name=aweme_id)
+            task = asyncio.create_task(self.get_comments(
+                aweme_id, semaphore), name=aweme_id)
             task_list.append(task)
         await asyncio.wait(task_list)
 
@@ -108,9 +112,11 @@ class DouYinCrawler(AbstractCrawler):
                     aweme_id=aweme_id,
                     callback=douyin.batch_update_dy_aweme_comments
                 )
-                utils.logger.info(f"aweme_id: {aweme_id} comments have all been obtained completed ...")
+                utils.logger.info(
+                    f"aweme_id: {aweme_id} comments have all been obtained completed ...")
             except DataFetchError as e:
-                utils.logger.error(f"aweme_id: {aweme_id} get comments failed, error: {e}")
+                utils.logger.error(
+                    f"aweme_id: {aweme_id} get comments failed, error: {e}")
 
     def create_proxy_info(self) -> Tuple[Optional[str], Optional[Dict], Optional[str]]:
         """Create proxy info for playwright and httpx"""
@@ -166,7 +172,8 @@ class DouYinCrawler(AbstractCrawler):
             )  # type: ignore
             return browser_context
         else:
-            browser = await chromium.launch(headless=headless, proxy=playwright_proxy)  # type: ignore
+            # type: ignore
+            browser = await chromium.launch(headless=headless, proxy=playwright_proxy)
             browser_context = await browser.new_context(
                 viewport={"width": 1920, "height": 1080},
                 user_agent=user_agent
