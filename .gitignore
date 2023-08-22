@@ -166,3 +166,4 @@ cython_debug/
 /browser_data/
 output
 .vscode
+*.safetensors

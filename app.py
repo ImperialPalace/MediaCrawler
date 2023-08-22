@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 13:51:05
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-20 01:39:06
+LastEditTime: 2023-08-22 22:32:15
 FilePath: \MediaCrawler\crawler_gui.py
 Description: 
 '''
@@ -27,6 +27,10 @@ import gradio as gr
 from custom_logging import setup_logging
 
 import os
+
+from safetensors_util.safetensors_gui import (
+    gradio_parser,
+    start_parser)
 
 # Set up logging
 log = setup_logging()
@@ -114,6 +118,32 @@ def download_tab(
         )
 
 
+def utility_tab(
+    headless=False,
+):
+    with gr.Tab('Utility'):
+        gr.Markdown(
+            'Utility data...')
+
+        # # Setup gradio tensorboard buttons
+        safetensors_path = gr.Textbox(
+            label="Safetensors", placeholder="Keep empty if you don't use.")
+
+        button_start_parser = gradio_parser()
+
+        button_start_parser.click(
+            fn=start_parser,
+            inputs=[safetensors_path]
+        )
+
+        # button_stop_parser.click(
+        #     fn=stop_parser,
+        # )
+        return (
+            "",
+        )
+
+
 def UI(**kwargs):
     try:
         # Your main code goes here
@@ -140,7 +170,9 @@ def UI(**kwargs):
                     (
                         logging_dir_input,
                     ) = download_tab(headless=headless)
-
+                    (
+                        logging_dir_input,
+                    ) = utility_tab(headless=headless)
             # Show the interface
             launch_kwargs = {}
             server_port = kwargs.get('server_port', 0)
