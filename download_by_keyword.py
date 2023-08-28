@@ -43,6 +43,8 @@ def get_note_info(note_res, output):
                     info = NoteInfo(
                         f"{domain_name}/{id}?imageView2/format/png", file_path)
                     note_info.append(info)
+                else:
+                    print("{} exists...".format(file_path))
 
     return note_info, video_url
 
