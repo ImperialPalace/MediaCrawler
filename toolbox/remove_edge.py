@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-18 22:36:57
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-19 03:29:37
+LastEditTime: 2023-08-24 11:15:04
 FilePath: \MediaCrawler\toolbox\remove_edge.py
 Description: Trim whitespace using PIL
 '''
@@ -78,8 +78,8 @@ if __name__ == '__main__':
     input = args.input
     output = args.output
 
-    input = r"H:\MediaCrawler\output\真人汉服\img\20_ohxt women"
-    output = r"H:\MediaCrawler\output\真人汉服\img\20_ohxt women out"
+    # input = r"H:\MediaCrawler\output\真人汉服\img\20_ohxt women"
+    # output = r"H:\MediaCrawler\output\真人汉服\img\20_ohxt women out"
 
     image_files = os.listdir(input)
 
