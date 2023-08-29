@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 13:51:05
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-28 15:48:28
+LastEditTime: 2023-08-29 16:08:36
 FilePath: \MediaCrawler\crawler_gui.py
 Description: 
 '''
@@ -19,6 +19,12 @@ from crawler_gui import (
     gradio_crawler,
     start_crawler,
     stop_crawler,
+)
+
+from utility.utility_gui import (
+    gradio_utility,
+    start_serach_userid,
+    stop_serach_userid,
 )
 
 import argparse
@@ -136,9 +142,22 @@ def utility_tab(
             inputs=[safetensors_path]
         )
 
-        # button_stop_parser.click(
-        #     fn=stop_parser,
-        # )
+        # # Setup gradio tensorboard buttons
+        keywords = gr.Textbox(
+            label="keywords", placeholder="Keep empty if you don't use.")
+
+        button_start_serach_userid, button_stop_serach_userid = gradio_utility(
+            "serach_userid")
+
+        button_start_serach_userid.click(
+            fn=start_serach_userid,
+            inputs=[keywords]
+        )
+
+        button_stop_serach_userid.click(
+            fn=stop_serach_userid,
+        )
+
         return (
             "",
         )

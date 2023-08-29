@@ -78,6 +78,8 @@ class XiaoHongShuCrawler(AbstractCrawler):
                 await self.search_by_user_ids()
             elif config.user_collect != '':
                 await self.search_by_user_collect_notes()
+            elif config.search_user_id_by_keywords != '':
+                await self.search_userid_by_keywords()
             else:
                 utils.logger.info("Input your search condition ...")
             utils.logger.info("Xhs Crawler finished ...")
@@ -159,6 +161,42 @@ class XiaoHongShuCrawler(AbstractCrawler):
                     note_id_list.append(note_detail.get("note_id"))
             utils.logger.info(f"Note details: {note_details}")
             # await self.batch_get_note_comments(note_id_list)
+
+    async def search_userid_by_keywords(self) -> None:
+        """Search for notes and retrieve their comment information."""
+        utils.logger.info("Begin search xiaohongshu keywords")
+        xhs_limit_count = 20  # xhs limit page fixed value
+        for keyword in config.search_user_id_by_keywords.split(","):
+            utils.logger.info(f"Current search keyword: {keyword}")
+            page = 1
+            while page * xhs_limit_count <= config.crawler_max_notes_count:
+                info_list: List[str] = []
+                notes_res = await self.xhs_client.get_note_by_keyword(
+                    keyword=keyword,
+                    page=page,
+                )
+                semaphore = asyncio.Semaphore(config.MAX_CONCURRENCY_NUM)
+                task_list = [
+                    self.get_note_detail(post_item.get("id"), semaphore)
+                    for post_item in notes_res.get("items", {})
+                    if post_item.get('model_type') not in ('rec_query', 'hot_query')
+                ]
+                note_details = await asyncio.gather(*task_list)
+                for note_detail in note_details:
+                    if note_detail is not None:
+                        user_info = note_detail.get("user", {})
+
+                        info = {
+                            # "note_id": note_detail.get("note_id"),
+                            "user_id": user_info.get("user_id"),
+                            "nickname": user_info.get("nickname"),
+                            "title": note_detail.get("title") or note_detail.get("desc", "")[:255],
+                        }
+                        # await xhs_model.update_xhs_note(note_detail)
+                        info_list.append(info)
+                page += 1
+                utils.logger.info(f"Info details: {info}")
+                # await self.batch_get_note_comments(note_id_list)
 
     async def get_note_detail(self, note_id: str, semaphore: asyncio.Semaphore) -> Optional[Dict]:
         """Get note detail"""

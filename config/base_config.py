@@ -9,6 +9,7 @@ PLATFORM = "xhs"
 keywords = ""
 userids = ""
 user_collect = ""
+search_user_id_by_keywords = ""
 
 LOGIN_TYPE = "qrcode"  # qrcode or phone or cookie
 COOKIES = ""  # login by cookie, if login_type is cookie, you must set this value
