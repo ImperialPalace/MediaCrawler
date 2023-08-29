@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 13:51:05
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-22 22:32:15
+LastEditTime: 2023-08-28 15:48:28
 FilePath: \MediaCrawler\crawler_gui.py
 Description: 
 '''
@@ -91,8 +91,8 @@ def download_tab(
             copy_output = gr.Textbox(label="copy output")
             button_start_copy = gradio_button("copy")
         with gr.Row():
-            remove_input = gr.Textbox(label="remove input")
-            remove_output = gr.Textbox(label="remove output")
+            remove_input = gr.Textbox(label="remove edge input")
+            remove_output = gr.Textbox(label="remove edge output")
             button_start_remove_edge = gradio_button("remove")
 
         button_start_download.click(
