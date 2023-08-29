@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-15 11:24:46
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-20 01:10:58
+LastEditTime: 2023-08-29 09:46:03
 FilePath: \MediaCrawler\toolbox\download_base.py
 Description: desc
 '''
@@ -41,12 +41,12 @@ def build_output(note, output):
         title = note.note_id
 
     output_path = os.path.join(
-        output, "{}-{}".format(note.user_id, note.nickname.strip()),
+        output, r"{}-{}".format(note.user_id, note.nickname.strip()),
         title.strip())
 
     try:
         if not os.path.exists(output_path):
-            os.makedirs(r"{output_path}")
+            os.makedirs(output_path)
     except Exception:
         print(":Create {} failed.".format(output_path))
         output_path = os.path.join(
