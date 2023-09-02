@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 13:51:05
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-29 16:08:36
+LastEditTime: 2023-09-02 13:43:10
 FilePath: \MediaCrawler\crawler_gui.py
 Description: 
 '''
@@ -36,7 +36,8 @@ import os
 
 from safetensors_util.safetensors_gui import (
     gradio_parser,
-    start_parser)
+    start_parser,
+    rebuild_metadata)
 
 # Set up logging
 log = setup_logging()
@@ -132,31 +133,46 @@ def utility_tab(
             'Utility data...')
 
         # # Setup gradio tensorboard buttons
-        safetensors_path = gr.Textbox(
-            label="Safetensors", placeholder="Keep empty if you don't use.")
+        with gr.Row():
+            safetensors_path = gr.Textbox(
+                label="Safetensors", placeholder="Keep empty if you don't use.")
 
-        button_start_parser = gradio_parser()
+            button_start_parser = gradio_parser("parser")
 
-        button_start_parser.click(
-            fn=start_parser,
-            inputs=[safetensors_path]
-        )
+            button_start_parser.click(
+                fn=start_parser,
+                inputs=[safetensors_path]
+            )
+
+        with gr.Row():
+            input = gr.Textbox(
+                label="input", placeholder="Keep empty if you don't use.")
+            output = gr.Textbox(
+                label="output", placeholder="Keep empty if you don't use.")
+
+            button_rebuild_metadata = gradio_parser("rebuild")
+
+            button_rebuild_metadata.click(
+                fn=rebuild_metadata,
+                inputs=[input, output]
+            )
 
         # # Setup gradio tensorboard buttons
-        keywords = gr.Textbox(
-            label="keywords", placeholder="Keep empty if you don't use.")
+        with gr.Row():
+            keywords = gr.Textbox(
+                label="keywords", placeholder="Keep empty if you don't use.")
 
-        button_start_serach_userid, button_stop_serach_userid = gradio_utility(
-            "serach_userid")
+            button_start_serach_userid, button_stop_serach_userid = gradio_utility(
+                "serach_userid")
 
-        button_start_serach_userid.click(
-            fn=start_serach_userid,
-            inputs=[keywords]
-        )
+            button_start_serach_userid.click(
+                fn=start_serach_userid,
+                inputs=[keywords]
+            )
 
-        button_stop_serach_userid.click(
-            fn=stop_serach_userid,
-        )
+            button_stop_serach_userid.click(
+                fn=stop_serach_userid,
+            )
 
         return (
             "",

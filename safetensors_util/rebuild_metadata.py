@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-27 21:53:23
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-27 22:46:00
+LastEditTime: 2023-09-02 13:23:52
 FilePath: \MediaCrawler\safetensors_util\sample_01.py
 Description: remove metadata of safetensors
 '''
@@ -11,11 +11,19 @@ import argparse
 from safetensors.torch import load, save_file
 import os
 from safetensors import safe_open
+import json
 
 
 def build_metadata():
-    metadata = {"name": "Lora"}
-    return metadata
+    with open(".\safetensors_util\metadata.json") as f:
+        inmeta = json.load(f)
+    if isinstance(inmeta, dict):
+        for k in inmeta:
+            inmeta[k] = str(inmeta[k])
+    else:
+        inmeta = str(inmeta)
+
+    return inmeta
 
 
 def read(in_path):
@@ -57,7 +65,7 @@ if __name__ == '__main__':
     output = args.output
 
     # input = r"C:\Users\fmsunyh\Desktop\zhangtianai-000010.safetensors"
-    # # input = r"c4tt4stic6.safetensors"
-    # output = "zhangtianai-000010.safetensors"
+    # input = r"c4tt4stic6.safetensors"
+    # output = "c4tt4stic6_test.safetensors"
 
     do_task(input, output)
