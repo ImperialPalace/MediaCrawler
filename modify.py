@@ -2,14 +2,14 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-29 19:08:23
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-30 16:29:01
+LastEditTime: 2023-08-29 19:22:29
 FilePath: \MediaCrawler\modify.py
 Description: 
 '''
 
 import os
 
-path = r"C:\Users\Firmi\Desktop\output\zjai-seaside\aaa"
+path = r"C:\Users\fmsunyh\Desktop\Liblib\Chinese-Hanfu3\img\25_face woman"
 data = os.listdir(path)
 
 for item in data:
