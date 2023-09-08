@@ -134,6 +134,13 @@ def PrintMetadata(cmdLine: dict, input_file: str) -> int:
         _ParseMore(md)
     json.dump({"__metadata__": md}, fp=sys.stdout,
               ensure_ascii=False, separators=(',', ':'), indent=1)
+
+    with open("./safetensors_util/output/out.json", "w") as fp:
+        json.dump({"__metadata__": md}, fp=fp,
+                  ensure_ascii=False, separators=(',', ':'), indent=1)
+
+    fp.close()
+
     return 0
 
 
