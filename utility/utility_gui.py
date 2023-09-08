@@ -7,6 +7,7 @@ import gradio as gr
 log = setup_logging()
 
 serach_userid_proc = None
+delete_note_proc = None
 
 
 def start_serach_userid(keywords):
@@ -43,14 +44,36 @@ def stop_serach_userid():
         log.info('Serach userid is not running...')
 
 
+def start_delete_note():
+    global delete_note_proc
+    log.info('Starting delete note...')
+
+    run_cmd = ["python", "utility/xhsnote_delete.py"]
+
+    log.info(run_cmd)
+
+    # Start background process
+    log.info('Starting serach userid...')
+    try:
+        delete_note_proc = subprocess.Popen(run_cmd)
+    except Exception as e:
+        log.error('Failed to delete note:', e)
+        return
+
+
 def gradio_utility(type):
     match type:
         case "serach_userid":
             with gr.Row():
                 button_start_serach_userid = gr.Button(
-                    'Start serach_userid', variant='primary')
+                    'Start serach userid', variant='primary')
                 button_stop_serach_userid = gr.Button('Stop serach userid')
                 return button_start_serach_userid, button_stop_serach_userid
+        case "delete_note":
+            with gr.Row():
+                button_start_delete_note = gr.Button(
+                    'Start delete_note', variant='primary')
+                return button_start_delete_note
         # case "copy":
         #     with gr.Row():
         #         button_start_copy = gr.Button('Start copy', variant='primary')

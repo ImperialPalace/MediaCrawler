@@ -105,6 +105,10 @@ async def query_xhs_note():
     return await XHSNote.all()
 
 
+async def query_delete_xhs_note():
+    return await XHSNote.delete()
+
+
 async def query_xhs_note_by_userid(user_id):
     # note_id = "6280c136000000000102e7d6"
     return await XHSNote.filter(user_id=user_id).all()

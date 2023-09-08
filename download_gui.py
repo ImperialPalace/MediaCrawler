@@ -2,7 +2,7 @@
 Author: fmsunyh fmsunyh@gmail.com
 Date: 2023-08-19 14:18:10
 LastEditors: fmsunyh fmsunyh@gmail.com
-LastEditTime: 2023-08-19 23:18:07
+LastEditTime: 2023-09-08 15:51:57
 FilePath: \MediaCrawler\download_gui.py
 Description: 
 '''
@@ -29,6 +29,8 @@ def start_download(keywords, user_ids, output):
     elif user_ids != '':
         run_cmd = ["python", "download_by_userid.py",
                    "--user_ids", user_ids, '--output', output]
+    else:
+        run_cmd = ["python", "download_all.py", '--output', output]
 
     log.info(run_cmd)
 

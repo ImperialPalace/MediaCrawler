@@ -25,6 +25,7 @@ from utility.utility_gui import (
     gradio_utility,
     start_serach_userid,
     stop_serach_userid,
+    start_delete_note,
 )
 
 import argparse
@@ -174,6 +175,12 @@ def utility_tab(
                 fn=stop_serach_userid,
             )
 
+        with gr.Row():
+            button_start_delete_note = gradio_utility("delete_note")
+
+            button_start_delete_note.click(
+                fn=start_delete_note,
+            )
         return (
             "",
         )
