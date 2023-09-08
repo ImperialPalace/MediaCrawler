@@ -13,7 +13,10 @@ LastEditTime: 2023-08-29 17:28:10
 import sys
 import asyncio
 import argparse
-sys.path.append(r"H:\MediaCrawler")
+import os
+
+cwd = os.getcwd()
+sys.path.append(cwd)
 
 
 class CrawlerFactory:
