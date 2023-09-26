@@ -190,7 +190,7 @@ class XiaoHongShuCrawler(AbstractCrawler):
                             # "note_id": note_detail.get("note_id"),
                             "user_id": user_info.get("user_id"),
                             "nickname": user_info.get("nickname"),
-                            "title": note_detail.get("title") or note_detail.get("desc", "")[:255],
+                            # "title": note_detail.get("title") or note_detail.get("desc", "")[:255],
                         }
                         # await xhs_model.update_xhs_note(note_detail)
                         info_list.append(info)
