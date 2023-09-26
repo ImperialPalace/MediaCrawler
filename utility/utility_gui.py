@@ -1,3 +1,11 @@
+'''
+Author: fmsunyh fmsunyh@gmail.com
+Date: 2023-09-08 20:44:36
+LastEditors: fmsunyh fmsunyh@gmail.com
+LastEditTime: 2023-09-08 20:50:04
+Description: desc
+'''
+
 import subprocess
 from custom_logging import setup_logging
 
@@ -46,14 +54,12 @@ def stop_serach_userid():
 
 def start_delete_note():
     global delete_note_proc
-    log.info('Starting delete note...')
-
     run_cmd = ["python", "utility/xhsnote_delete.py"]
 
     log.info(run_cmd)
 
     # Start background process
-    log.info('Starting serach userid...')
+    log.info('Starting delete note...')
     try:
         delete_note_proc = subprocess.Popen(run_cmd)
     except Exception as e:

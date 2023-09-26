@@ -17,6 +17,37 @@ from urllib.parse import urlparse
 # from tortoise.queryset import QuerySet
 
 
+# def get_note_info(note_res, output):
+#     note_info = []
+#     video_url = []
+#     for note in note_res:
+#         if note.type == NoteType.VIDEO.value:
+#             pass
+#             # video_url = get_video_url_from_note(note)
+#             # video_filename = os.path.join(new_dir_path, f"{title}.mp4")
+#             # download_file(video_url, video_filename)
+#         else:
+#             output_path = build_output(note, output)
+
+#             trace_id = note.trace_id.split(",")
+#             image_list = note.image_list.split(",")
+#             if not len(trace_id):
+#                 return []
+
+#             res = urlparse(image_list[0])
+#             domain_name = f"{res.scheme}://{res.hostname}/"
+
+#             for index, id in enumerate(trace_id):
+#                 file_path = '{}/{:04d}.png'.format(output_path, index)
+#                 if not os.path.exists(file_path):
+#                     info = NoteInfo(
+#                         f"{domain_name}/{id}?imageView2/format/png", file_path)
+#                     note_info.append(info)
+#                 else:
+#                     print("{} exists...".format(file_path))
+
+#     return note_info, video_url
+
 def get_note_info(note_res, output):
     note_info = []
     video_url = []
@@ -29,19 +60,19 @@ def get_note_info(note_res, output):
         else:
             output_path = build_output(note, output)
 
-            trace_id = note.trace_id.split(",")
+            # trace_id = note.trace_id.split(",")
             image_list = note.image_list.split(",")
-            if not len(trace_id):
-                return []
+            # if not len(trace_id):
+            #     return []
 
-            res = urlparse(image_list[0])
-            domain_name = f"{res.scheme}://{res.hostname}/"
+            # res = urlparse(image_list[0])
+            # domain_name = f"{res.scheme}://{res.hostname}/"
 
-            for index, id in enumerate(trace_id):
+            for index, id in enumerate(image_list):
                 file_path = '{}/{:04d}.png'.format(output_path, index)
                 if not os.path.exists(file_path):
                     info = NoteInfo(
-                        f"{domain_name}/{id}?imageView2/format/png", file_path)
+                        f"{id}?imageView2/format/png", file_path)
                     note_info.append(info)
                 else:
                     print("{} exists...".format(file_path))
@@ -85,7 +116,8 @@ def do_task(output):
 
 # define command line params ...
 parser = argparse.ArgumentParser(description='Media crawler program.')
-parser.add_argument('--output', type=str, help='', default="output/test")
+parser.add_argument('--output', type=str, help='', default=r"I:/xhs_data")
+
 
 if __name__ == '__main__':
     args = parser.parse_args()
